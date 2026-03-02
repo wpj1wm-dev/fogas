@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Análise Tributária – FOGÁS (Serviços · A170)</title>
+<style>
+
+
+
+    :root {
+        --bg-main: #050816;
+        --bg-card: #0b1120;
+        --bg-soft: #020617;
+        --border-subtle: #1f2937;
+        --text-main: #e5e7eb;
+        --text-muted: #9ca3af;
+        --accent: #38bdf8;
+        --accent-soft: rgba(56, 189, 248, 0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: radial-gradient(circle at top left, #1b2a4a 0, #020617 36%, #020617 100%);
+        color: var(--text-main);
+        padding: 32px 12px 40px;
+    }
+    .page { max-width: 1440px; margin: 0 auto; }
+    header { margin-bottom: 28px; }
+    .badge-row {
+        display:flex; justify-content: space-between; align-items:center;
+        gap:12px; margin-bottom:8px; flex-wrap:wrap;
+    }
+    .badge {
+        display:inline-flex; align-items:center; gap:8px;
+        font-size:12px; padding:6px 10px; border-radius:999px;
+        background: linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(37, 99, 235, 0.16));
+        color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+    .badge span.dot {
+        width:8px; height:8px; border-radius:999px; background:var(--accent);
+        box-shadow: 0 0 0 5px rgba(56, 189, 248, 0.3);
+    }
+    h1 { font-size: 26px; margin: 0 0 6px; letter-spacing: -0.02em; }
+    .subtitle { font-size: 14px; color: var(--text-muted); max-width: 980px; }
+    .kpi-row {
+        margin-top: 14px;
+        display:grid;
+        grid-template-columns: repeat(4, minmax(0,1fr));
+        gap: 12px;
+    }
+    @media (max-width: 980px) {
+        .kpi-row { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    .kpi {
+        border-radius: 16px;
+        border: 1px solid var(--border-subtle);
+        background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.08), #020617 60%);
+        padding: 12px 14px;
+        box-shadow: 0 16px 36px rgba(15, 23, 42, 0.75);
+    }
+    .kpi .label { font-size: 11px; color: var(--text-muted); }
+    .kpi .value { font-size: 18px; margin-top: 4px; }
+    .kpi .hint { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .grid {
+        display:grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+        gap: 16px;
+        margin-top: 16px;
+    }
+    @media (max-width: 1024px) {
+        .grid { grid-template-columns: minmax(0, 1fr); }
+    }
+    .chart-card {
+        background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.06), #020617 55%);
+        border-radius: 18px;
+        border: 1px solid var(--border-subtle);
+        padding: 14px 14px 16px;
+        display:flex; flex-direction:column; gap: 12px;
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.8);
+    }
+    .chart-header { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+    .chart-title-block h2 { font-size: 15px; margin: 0 0 2px; }
+    .chart-title-block p { font-size: 12px; color: var(--text-muted); margin: 0; }
+    .pill {
+        font-size: 11px; padding: 4px 9px; border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.6);
+        background: rgba(15, 23, 42, 0.9); white-space: nowrap;
+    }
+    .chart-body {
+        display:grid;
+        grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+        gap: 18px; align-items: stretch;
+    }
+    @media (max-width: 768px) {
+        .chart-body { grid-template-columns: minmax(0, 1fr); }
+    }
+    figure {
+        margin:0; padding:0;
+        background:#020617;
+        border-radius: 12px;
+        border: 1px solid rgba(15,23,42,0.9);
+        display:flex; align-items:center; justify-content:center;
+        overflow:hidden;
+        min-height: 280px;
+    }
+    figure img { display:block; width:100%; height:100%; }
+    .analysis h3 {
+        font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em;
+        color: var(--accent); margin: 0 0 6px;
+    }
+    .analysis p, .analysis li {
+        font-size: 12px; color: var(--text-muted); line-height: 1.55;
+        margin: 0 0 6px;
+    }
+    .analysis ul { padding-left: 16px; margin: 0; }
+    table {
+        width:100%;
+        border-collapse: collapse;
+        font-size: 12px;
+        color: var(--text-muted);
+        overflow:hidden;
+        border-radius: 10px;
+        border: 1px solid rgba(31,41,55,0.8);
+        background: rgba(2,6,23,0.7);
+    }
+    th, td {
+        padding: 8px 10px;
+        border-bottom: 1px solid rgba(31,41,55,0.7);
+        text-align: left;
+        vertical-align: top;
+    }
+    th { color: #cbd5e1; font-weight: 600; }
+    .note {
+        margin-top: 10px;
+        font-size: 11px;
+        color: #94a3b8;
+        background: rgba(56, 189, 248, 0.06);
+        border: 1px dashed rgba(56, 189, 248, 0.35);
+        padding: 10px 12px;
+        border-radius: 12px;
+    }
+    footer { margin-top: 22px; font-size: 11px; color: #6b7280; text-align: right; }
+
+
+
+</style>
+</head>
+<body>
+<div class="page">
+<header>
+    <div class="badge-row">
+        <div class="badge"><span class="dot"></span><span>FOGÁS · Análise Tributária (EFD Contribuições · A170)</span></div>
+        <div style="font-size:11px; color:var(--text-muted);">EFD Contribuições · Base: Cruzamentodedados_Fogás.xlsx (A170/A100) · Período 01/07/2025 a 30/09/2025 · Serviços prestados (IND_OPER=1): R$ 1.024.860,54</div>
+    </div>
+    <h1>Visão Executiva – Volume e Local da Prestação de Serviços (FOGÁS)</h1>
+    <p class="subtitle">
+        Painel analítico com foco em <b>materialidade</b> (VL_ITEM), <b>localidade</b> (UF/Município do documento de serviço) e
+        <b>carga atual</b> (PIS/COFINS/ISS), além de um <b>stress test</b> com alíquota uniforme de <b>26%</b> (IBS/CBS) para priorização de hotspots.
+        As análises são indicativas e dependem da qualidade cadastral e da correta classificação do local de incidência do ISS (LC 116/2003).
+    </p>
+
+    <div class="kpi-row">
+        <div class="kpi">
+            <div class="label">Volume de serviços (VL_ITEM)</div>
+            <div class="value">R$ 1.024.860,54</div>
+            <div class="hint">Itens A170 · IND_OPER = 1</div>
+        </div>
+        <div class="kpi">
+            <div class="label">Carga atual (PIS+COFINS+ISS)</div>
+            <div class="value">R$ 144.178,12</div>
+            <div class="hint">Efetiva média: 14,1%</div>
+        </div>
+        <div class="kpi">
+            <div class="label">IBS/CBS simulado (26%)</div>
+            <div class="value">R$ 266.463,74</div>
+            <div class="hint">Δ: R$ 122.285,62 (11,9%)</div>
+        </div>
+        <div class="kpi">
+            <div class="label">Mensagem-chave</div>
+            <div class="value">Concentração geográfica elevada</div>
+            <div class="hint">AM responde por 64,9% do volume (VL_ITEM); priorize controles por praça e conciliação NFS-e</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <b>Resumo:</b> a base A170 analisada contém <b>somente serviços prestados</b> (IND_OPER=1) no período.
+        Há forte concentração em <b>MANAUS/AM</b> (principal hotspot), seguida por <b>Boa Vista/RR</b> e <b>Porto Velho/RO</b>.
+        Recomenda-se priorizar: (i) validação do <b>município/UF de incidência do ISS</b> por tipo de serviço; (ii) conciliação <b>NFS-e x EFD</b>;
+        (iii) governança cadastral do tomador/local de execução; e (iv) checagem de <b>retenções</b>.
+    </div>
+</header>
+
+<main class="grid">
+
+<section class="chart-card">
+    <div class="chart-header">
+        <div class="chart-title-block">
+            <h2>1. Carga atual x IBS/CBS (26%)</h2>
+            <p>Comparação consolidada de PIS + COFINS + ISS versus cenário indicativo de IBS/CBS (26%) sobre VL_ITEM.</p>
+        </div>
+        <div class="pill">FOGÁS · Consolidado</div>
+    </div>
+    <div class="chart-body">
+        <figure><img src="fogas_dashboard_assets_servicos/fogas_chart1_carga_total.png" alt="Carga atual x IBS/CBS 26%"></figure>
+        <div class="analysis">
+            <h3>Leitura executiva</h3>
+            <p>
+                A alíquota efetiva média atual (PIS+COFINS+ISS) é de <b>14,1%</b>. O cenário uniforme de <b>26%</b> indica <b>Δ</b> de <b>R$ 122.285,62</b>.
+            </p>
+            <p>
+                Use este comparativo como mapa de exposição para priorizar revisão de praça, contratos e parametrização – não como cálculo legal definitivo.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="chart-card">
+    <div class="chart-header">
+        <div class="chart-title-block">
+            <h2>2. Mix de serviços (COD_ITEM) – materialidade e exposição</h2>
+            <p>Distribuição do volume por tipo de serviço e comparativo Atual x IBS/CBS (26%).</p>
+        </div>
+        <div class="pill">Tipos de serviço</div>
+    </div>
+    <div class="chart-body">
+        <figure><img src="fogas_dashboard_assets_servicos/fogas_chart2_cod_item.png" alt="COD_ITEM – Atual x IBS/CBS 26%"></figure>
+        <div class="analysis">
+            <h3>Prioridades</h3>
+            <p>Faça auditoria documental e fiscal primeiro nos tipos de serviço mais materiais (cadastro, NFS-e, local de incidência e retenções).</p>
+            <p><b>Tabela de apoio:</b></p>
+            <table><tr><th>COD_ITEM</th><th>Valor (VL_ITEM)</th><th>Carga atual</th><th>IBS/CBS 26%</th><th>Δ 26%</th></tr><tr><td>SERV_INTERMEDIACAO</td><td>R$ 934.657,55</td><td>R$ 133.063,06</td><td>R$ 243.010,96</td><td>R$ 109.947,90</td></tr><tr><td>SINST</td><td>R$ 90.202,99</td><td>R$ 11.115,06</td><td>R$ 23.452,78</td><td>R$ 12.337,72</td></tr></table>
+        </div>
+    </div>
+</section>
+
+<section class="chart-card">
+    <div class="chart-header">
+        <div class="chart-title-block">
+            <h2>3. Localidade – UF (Top 10 por valor)</h2>
+            <p>Concentração do valor de serviços por UF (campo UF do documento de serviço na base).</p>
+        </div>
+        <div class="pill">UF</div>
+    </div>
+    <div class="chart-body">
+        <figure><img src="fogas_dashboard_assets_servicos/fogas_chart3_uf_top10.png" alt="Valor por UF"></figure>
+        <div class="analysis">
+            <h3>Implicações</h3>
+            <p>
+                Como ISS é municipal, a UF é apenas um “primeiro corte”; o município (abaixo) define grande parte do risco.
+                Priorize UFs mais materiais e valide se o município indicado é o correto para o tipo de serviço.
+            </p>
+            <p><b>Top UFs (VL_ITEM):</b></p>
+            <table><tr><th>UF</th><th>Valor (VL_ITEM)</th><th>%</th></tr><tr><td>AM</td><td>R$ 665.013,67</td><td>64,9%</td></tr><tr><td>RR</td><td>R$ 136.911,13</td><td>13,4%</td></tr><tr><td>RO</td><td>R$ 121.000,39</td><td>11,8%</td></tr><tr><td>AC</td><td>R$ 39.171,36</td><td>3,8%</td></tr><tr><td>PA</td><td>R$ 32.979,74</td><td>3,2%</td></tr></table>
+        </div>
+    </div>
+</section>
+
+<section class="chart-card">
+    <div class="chart-header">
+        <div class="chart-title-block">
+            <h2>4. Evolução mensal – volume x carga</h2>
+            <p>Tendência mensal do valor de serviços (VL_ITEM) e da carga atual (PIS+COFINS+ISS).</p>
+        </div>
+        <div class="pill">Sazonalidade</div>
+    </div>
+    <div class="chart-body">
+        <figure><img src="fogas_dashboard_assets_servicos/fogas_chart4_mensal.png" alt="Evolução mensal"></figure>
+        <div class="analysis">
+            <h3>Como usar</h3>
+            <p>
+                Cruce os meses de pico com o heatmap UF x mês para identificar praças críticas e direcionar conciliação NFS-e x EFD.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="chart-card">
+    <div class="chart-header">
+        <div class="chart-title-block">
+            <h2>5. Pareto de municípios – onde concentrar validação do ISS</h2>
+            <p>Concentração do valor (VL_ITEM) por município para priorizar auditoria do local de incidência e cadastros do tomador.</p>
+        </div>
+        <div class="pill">Municípios</div>
+    </div>
+    <div class="chart-body">
+        <figure><img src="fogas_dashboard_assets_servicos/fogas_chart5_pareto_municipio.png" alt="Pareto municípios"></figure>
+        <div class="analysis">
+            <h3>Hotspots (Top municípios)</h3>
+            <table><tr><th>UF</th><th>Município</th><th>Valor</th><th>%</th></tr><tr><td>AM</td><td>Manaus</td><td>R$ 652.880,39</td><td>63,7%</td></tr><tr><td>RR</td><td>Boa Vista</td><td>R$ 132.671,91</td><td>12,9%</td></tr><tr><td>RO</td><td>Porto Velho</td><td>R$ 81.756,79</td><td>8,0%</td></tr><tr><td>PA</td><td>Santarém</td><td>R$ 32.979,74</td><td>3,2%</td></tr><tr><td>AC</td><td>Rio Branco</td><td>R$ 28.981,94</td><td>2,8%</td></tr><tr><td>MT</td><td>Cuiabá</td><td>R$ 16.584,86</td><td>1,6%</td></tr><tr><td>RO</td><td>Cacoal</td><td>R$ 7.693,79</td><td>0,8%</td></tr><tr><td>RO</td><td>Alta Floresta D'Oeste</td><td>R$ 7.673,77</td><td>0,7%</td></tr></table>
+            <div class="note">
+                <b>Recomendação:</b> para Manaus/AM, Boa Vista/RR e Porto Velho/RO, defina um “pacote mínimo” de evidências:
+                contrato, ordem/OS, comprovação de execução (DT_EXE_SERV), NFS-e e apuração/recolhimento do ISS no município correto.
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="chart-card">
+    <div class="chart-header">
+        <div class="chart-title-block">
+            <h2>6. Heatmap – UF x mês (valor)</h2>
+            <p>Matriz de valor de serviços por UF ao longo do período (R$ mi).</p>
+        </div>
+        <div class="pill">UF x mês</div>
+    </div>
+    <div class="chart-body">
+        <figure><img src="fogas_dashboard_assets_servicos/fogas_chart6_heatmap_uf_mes.png" alt="Heatmap UF x mês"></figure>
+        <div class="analysis">
+            <h3>Decisão prática</h3>
+            <p>As células mais intensas indicam onde o volume se concentra por praça e mês – use como roteiro de conciliação e amostragem.</p>
+        </div>
+    </div>
+</section>
+
+<section class="chart-card">
+    <div class="chart-header">
+        <div class="chart-title-block">
+            <h2>7. Heatmap – UF x tipo de serviço</h2>
+            <p>Materialidade por combinação de UF e COD_ITEM.</p>
+        </div>
+        <div class="pill">UF x COD_ITEM</div>
+    </div>
+    <div class="chart-body">
+        <figure><img src="fogas_dashboard_assets_servicos/fogas_chart6b_heatmap_uf_tipo.png" alt="Heatmap UF x COD_ITEM"></figure>
+        <div class="analysis">
+            <h3>O que olhar</h3>
+            <p>Se o mix muda por UF, tende a mudar também o “manual de ISS” (exigências municipais e local de incidência). Trate como mapa de governança.</p>
+        </div>
+    </div>
+</section>
+
+<section class="chart-card">
+    <div class="chart-header">
+        <div class="chart-title-block">
+            <h2>8. Histograma – alíquota efetiva atual</h2>
+            <p>Distribuição por item: (PIS + COFINS + ISS) / VL_ITEM.</p>
+        </div>
+        <div class="pill">Dispersão</div>
+    </div>
+    <div class="chart-body">
+        <figure><img src="fogas_dashboard_assets_servicos/fogas_chart7_hist_aliquota_efetiva.png" alt="Histograma alíquota efetiva"></figure>
+        <div class="analysis">
+            <h3>O que está dizendo</h3>
+            <p>Percentis (itens): P25 14,2% · Mediana 14,2% · P75 14,3% · P90 14,3% · P95 14,3%.</p>
+            <p>Distribuição estreita sugere padrão tributário uniforme; priorize outliers (retenções, base, município e alíquota de ISS).</p>
+        </div>
+    </div>
+</section>
+
+<section class="chart-card">
+    <div class="chart-header">
+        <div class="chart-title-block">
+            <h2>9. Δ (IBS/CBS 26% – carga atual) por UF</h2>
+            <p>Comparativo indicativo por praça (UF) para priorização de exposição.</p>
+        </div>
+        <div class="pill">Δ por UF</div>
+    </div>
+    <div class="chart-body">
+        <figure><img src="fogas_dashboard_assets_servicos/fogas_chart8_delta_uf.png" alt="Delta por UF"></figure>
+        <div class="analysis">
+            <h3>Como usar</h3>
+            <p>UFs com maior Δ e alta materialidade devem ser tratadas como frentes prioritárias (pricing, contratos, evidências e cadastros por município).</p>
+        </div>
+    </div>
+</section>
+
+<section class="chart-card">
+    <div class="chart-header">
+        <div class="chart-title-block">
+            <h2>10. Mapa de risco – municípios (materialidade x Δ%)</h2>
+            <p>Prioriza onde o volume é grande e a pressão relativa (comparativo) é maior.</p>
+        </div>
+        <div class="pill">Risco</div>
+    </div>
+    <div class="chart-body">
+        <figure><img src="fogas_dashboard_assets_servicos/fogas_chart9_risco_municipio.png" alt="Mapa de risco municípios"></figure>
+        <div class="analysis">
+            <h3>Prioridade por praça</h3>
+            <p>Municípios no quadrante “alto volume / alta pressão” são candidatos a auditoria do ISS (local de incidência) e conciliação NFS-e x EFD.</p>
+        </div>
+    </div>
+</section>
+
+<section class="chart-card">
+    <div class="chart-header">
+        <div class="chart-title-block">
+            <h2>11. B2B x B2C (proxy por CNPJ/CPF)</h2>
+            <p>Segmentação simples para leitura comercial e de risco cadastral do tomador.</p>
+        </div>
+        <div class="pill">Clientes</div>
+    </div>
+    <div class="chart-body">
+        <figure><img src="fogas_dashboard_assets_servicos/fogas_chart10_b2b_b2c.png" alt="B2B x B2C"></figure>
+        <div class="analysis">
+            <h3>Interpretação</h3>
+            <p>Itens com tomador sem documento (“Não informado”) aumentam risco de retenções, divergências e dificultam comprovação de localidade.</p>
+        </div>
+    </div>
+</section>
+
+<section class="chart-card">
+    <div class="chart-header">
+        <div class="chart-title-block">
+            <h2>12. Qualidade cadastral e consistência fiscal</h2>
+            <p>Indicadores para reduzir risco de autuação (ISS/PIS/COFINS) e divergências em obrigações acessórias.</p>
+        </div>
+        <div class="pill">Qualidade</div>
+    </div>
+    <div class="chart-body">
+        <figure><img src="fogas_dashboard_assets_servicos/fogas_chart11_qualidade.png" alt="Qualidade"></figure>
+        <div class="analysis">
+            <h3>Checklist rápido</h3>
+            <ul>
+                <li><b>% sem UF:</b> 0,0%</li>
+                <li><b>% sem MUNICIPIO:</b> 0,0%</li>
+                <li><b>% COD LC 116 ausente/0:</b> 100,0%</li>
+                <li><b>% VL_ITEM=0:</b> 0,0%</li>
+                <li><b>% PIS&gt;0 e BC=0:</b> 0,0%</li>
+                <li><b>% BC&gt;0 e PIS=0:</b> 0,0%</li>
+            </ul>
+            <div class="note">
+                <b>Ponto de atenção:</b> o campo <b>COD LC 116</b> aparece majoritariamente como <b>0</b> (genérico) nesta base.
+                Isso limita uma auditoria “por item da lista” e aumenta risco de enquadramento/ISS no município errado.
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="chart-card">
+    <div class="chart-header">
+        <div class="chart-title-block">
+            <h2>13. Regime do destinatário (proxy)</h2>
+            <p>Distribuição do volume por regime do tomador (proxy por raiz de CNPJ) para orientar política comercial e risco.</p>
+        </div>
+        <div class="pill">Cadastro de clientes</div>
+    </div>
+    <div class="chart-body">
+        <figure><img src="fogas_dashboard_assets_servicos/fogas_chart12_regime.png" alt="Regime do destinatário"></figure>
+        <div class="analysis">
+            <h3>Observação</h3>
+            <p>Proxy baseado em base de regimes (ano 2023). “NÃO ENCONTRADO” indica necessidade de enriquecimento cadastral.</p>
+        </div>
+    </div>
+</section>
+
+<section class="chart-card">
+    <div class="chart-header">
+        <div class="chart-title-block">
+            <h2>Checklist de adequação – foco em local de incidência e evidências</h2>
+            <p>Ações práticas para endereçar riscos de ISS e coerência da escrituração.</p>
+        </div>
+        <div class="pill">Plano de ação</div>
+    </div>
+    <div class="chart-body">
+        <div class="analysis" style="grid-column: 1 / -1;">
+            <h3>Trilha recomendada</h3>
+            <ul>
+                <li><b>Local do ISS (município correto):</b> validar regra aplicável por tipo de serviço e evidência de execução (DT_EXE_SERV) para Top municípios.</li>
+                <li><b>Conciliação NFS-e x EFD:</b> amostragem por hotspots do heatmap (UF x mês) com verificação de tomador, valores e ISS.</li>
+                <li><b>Enriquecer COD LC 116:</b> atribuir o item correto da LC 116/2003 (evitar “0”), criando governança de cadastro por contrato.</li>
+                <li><b>Retenções (PIS/COFINS):</b> revisar consistência de VL_PIS_RET/VL_COFINS_RET e condições contratuais por tomador.</li>
+                <li><b>Matriz por praça:</b> manter matriz de alíquota ISS e exigências municipais (NFS-e, cadastro, particularidades) para AM/RR/RO.</li>
+            </ul>
+            <div class="note">
+                <b>Limitação:</b> este painel usa o recorte <b>A170</b>. Para diagnóstico completo do “local” do ISS, cruze com A100, NFS-e e contratos.
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="chart-card">
+    <div class="chart-header">
+        <div class="chart-title-block">
+            <h2>Premissas e metodologia</h2>
+            <p>Critérios e simplificações adotados para cálculo e visualizações.</p>
+        </div>
+        <div class="pill">Metodologia</div>
+    </div>
+    <div class="chart-body">
+        <div class="analysis" style="grid-column: 1 / -1;">
+            <ul>
+                <li><b>Base:</b> aba <b>A170</b> do arquivo cruzado informado.</li>
+                <li><b>Foco:</b> <b>IND_OPER=1</b> (serviços prestados) – toda a base analisada está nesse recorte.</li>
+                <li><b>Volume:</b> somatório de <b>VL_ITEM</b>.</li>
+                <li><b>Carga atual:</b> <b>VL_PIS.1 + VL_COFINS.1 + VL_ISS</b>.</li>
+                <li><b>Localidade:</b> campos <b>UF</b> e <b>MUNICIPIO</b> do documento de serviço (referência operacional na base).</li>
+                <li><b>Stress test IBS/CBS 26%:</b> alíquota uniforme sobre VL_ITEM para priorização (não é cálculo legal definitivo).</li>
+                <li><b>Regime do tomador (proxy):</b> por raiz de CNPJ com base de regimes (ano 2023).</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+</main>
+
+<footer>
+    FOGÁS · Análise Tributária (EFD Contribuições · A170) – Painel de materialidade e localidade da prestação de serviços.
+</footer>
+</div>
+</body>
+</html>
